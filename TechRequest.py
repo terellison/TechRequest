@@ -46,11 +46,11 @@ def main():
 def addRequests():
     db = open("flatFile.txt", 'a')
     q = 'y'
-    completionDate = "NA"
     
     # Prompts the user and adds new requests to the database until the user declines
     # to add another request
     while q == 'y':
+        completionDate = "NA"
         request = input("What would you like to request to be done?: ")
         dateAssigned = input("Enter the date the request was assigned (MM/DD/YYYY): ")
         reqCompleted = input("Is this request complete? [y/n]: ")
@@ -79,25 +79,26 @@ def readDB():
 
 # Allows a user to edit an existing request
 def editRequest():
-    lineNum = 1
+    lineNum = 0
     dbToString = ""
     db = open("flatFile.txt", 'r')
     print("Here are the current requests:\n")
     for request in db:
-        splitRequest = request.split("\t")
-        if splitRequest[0] != "\n":
-            print(lineNum, ")Request: " + splitRequest[0] + "\nDate Assigned: " + splitRequest[1] +
-                  "\nCompleted?: " + splitRequest[2] + "\nCompletion Date: " + splitRequest[3] +
-                  "\nAssigned Technician: " + splitRequest[4] + "\n")
-        dbToString += (request)
-        lineNum += 1
+        if request != '':
+            splitRequest = request.split("\t")
+            if splitRequest[0] != "\n":
+                print(lineNum, ") Request: " + splitRequest[0] + "\nDate Assigned: " + splitRequest[1] +
+                      "\nCompleted?: " + splitRequest[2] + "\nCompletion Date: " + splitRequest[3] +
+                      "\nAssigned Technician: " + splitRequest[4] + "\n", sep='')
+            dbToString += (request)
+            lineNum += 1
     db.close()
     db = open("flatFile.txt", 'w')
 
     # Determine the request the user would like to edit
     reqNum = int(input("Enter the number of the request you'd like to edit: "))
     dbSplit = dbToString.split("\n")
-    reqToEdit = dbSplit[reqNum - 1]
+    reqToEdit = dbSplit[reqNum]
     reqPerItem = reqToEdit.split("\t")
 
     # Check if the selected request is already completed. If so, exit the function
@@ -119,7 +120,7 @@ def editRequest():
         changedReq = ""
         for item in reqPerItem:
             changedReq += item + "\t"
-        dbSplit[reqNum - 1] = changedReq
+        dbSplit[reqNum] = changedReq
 
     # Write changes to database
     for item in dbSplit:
