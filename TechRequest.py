@@ -79,7 +79,7 @@ def readDB():
 
 # Allows a user to edit an existing request
 def editRequest():
-    lineNum = 0
+    lineNum = 1
     dbToString = ""
     db = open("flatFile.txt", 'r')
     print("Here are the current requests:\n")
@@ -90,15 +90,15 @@ def editRequest():
                 print(lineNum, ") Request: " + splitRequest[0] + "\nDate Assigned: " + splitRequest[1] +
                       "\nCompleted?: " + splitRequest[2] + "\nCompletion Date: " + splitRequest[3] +
                       "\nAssigned Technician: " + splitRequest[4] + "\n", sep='')
-            dbToString += (request)
-            lineNum += 1
+                lineNum += 1
+                dbToString += (request)
     db.close()
     db = open("flatFile.txt", 'w')
 
     # Determine the request the user would like to edit
     reqNum = int(input("Enter the number of the request you'd like to edit: "))
     dbSplit = dbToString.split("\n")
-    reqToEdit = dbSplit[reqNum]
+    reqToEdit = dbSplit[reqNum - 1]
     reqPerItem = reqToEdit.split("\t")
 
     # Check if the selected request is already completed. If so, exit the function
@@ -120,7 +120,7 @@ def editRequest():
         changedReq = ""
         for item in reqPerItem:
             changedReq += item + "\t"
-        dbSplit[reqNum] = changedReq
+        dbSplit[reqNum - 1] = changedReq
 
     # Write changes to database
     for item in dbSplit:
