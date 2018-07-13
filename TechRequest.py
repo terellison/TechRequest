@@ -22,10 +22,11 @@ def main():
     # The loop will reprompt the user until they close the program
     
     answer = ''
-    while answer != 'd':
+    while answer != 'e':
         print("\nWhat would you like to do?")
         print("a) Display current database\nb) Add new requests to database\n" +
-               "c) Edit an existing request\n" + "d) Close the program")
+               "c) Edit an existing request\n" + "d) Generate a report of open requests " +
+               "for a technician\n" + "e) Close the program")
         answer = input("Enter the letter of your choice: ")
         answer.lower()
         if answer == 'a':
@@ -35,6 +36,9 @@ def main():
         elif answer == 'c':
             editRequest()
         elif answer == 'd':
+            techToGenerate = input("Which technician would you like to generate a report for?: ")
+            generateReport(techToGenerate)
+        elif answer == 'e':
             print("\nGoodbye!")
             flatFile.close()
             exit()
@@ -126,4 +130,26 @@ def editRequest():
     for item in dbSplit:
         db.write(item + "\n")
     db.close()
+    
+# Allows a user to generate a report of open requests for a technician
+def generateReport(techName):
+    db = open("flatFile.txt", 'r')
+    outFile = open((techName + "_open_requests.txt"), 'w')
+    dbToString = ""
+    for request in db:
+        dbToString += request
+    dbSplit = dbToString.split("\n")
+    for item in dbSplit:
+        if item != '':
+            reqPerItem = item.split("\t")
+
+            # If the request is open and matches the specified technician,
+            # write it to the output file
+            if reqPerItem[2] == "No" and reqPerItem[4] == techName:
+                outFile.write("Request: " + reqPerItem[0] + "\nDate Assigned: " + reqPerItem[1] +
+                  "\nCompleted?: " + reqPerItem[2] + "\nCompletion Date: " + reqPerItem[3] + "\n")
+    db.close()
+    outFile.close()
+    print("Generated report of open requests for " + techName + ". " +
+          "File name: " + (techName + "_open_requests.txt"))
 main()
