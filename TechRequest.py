@@ -83,11 +83,10 @@ def editRequest():
     dbToString = ""
     db = open("flatFile.txt", 'r')
     print("Here are the current requests:\n")
-    print("Request\t\tDate Assigned\tCompleted?\t\tCompletion Date\tAssigned Technician\n")
     for request in db:
         splitRequest = request.split("\t")
         if splitRequest[0] != "\n":
-            print(lineNum, "Request: " + splitRequest[0] + "\nDate Assigned: " + splitRequest[1] +
+            print(lineNum, ")Request: " + splitRequest[0] + "\nDate Assigned: " + splitRequest[1] +
                   "\nCompleted?: " + splitRequest[2] + "\nCompletion Date: " + splitRequest[3] +
                   "\nAssigned Technician: " + splitRequest[4] + "\n")
         dbToString += (request)
@@ -101,13 +100,23 @@ def editRequest():
     reqToEdit = dbSplit[reqNum - 1]
     reqPerItem = reqToEdit.split("\t")
 
+    # Check if the selected request is already completed. If so, exit the function
+    if reqPerItem[2] == "Yes":
+        print("\nThe selected request has already been completed. Please try again and" +
+              " select a different request.")
+        # Re-write data to database to protect against data loss
+        for item in dbSplit:
+            db.write(item + "\n")
+        db.close()
+        return
+
     # Determine what changes to make to the request
     markComplete = input("Mark job as complete? [y/n]: ")
     if markComplete == 'y':
         compDate = input("Enter the date of completion (MM/DD/YYYY): ")
         reqPerItem[2] = "Yes"
         reqPerItem[3] = (compDate)
-        changedReq = "\n"
+        changedReq = ""
         for item in reqPerItem:
             changedReq += item + "\t"
         dbSplit[reqNum - 1] = changedReq
