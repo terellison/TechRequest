@@ -41,7 +41,7 @@ def main():
         elif answer == 'e':
             print("\nGoodbye!")
             flatFile.close()
-            exit()
+            sys.exit
         # Input validation
         else:
             print("Sorry, that's an invalid entry. Please enter one of the choices above.\n")
